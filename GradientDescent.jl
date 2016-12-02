@@ -1,10 +1,11 @@
-function logLikelihood(X,y,theta,lambda)	
-	println(view(X,:,1))
+function logLikelihood(X,y,theta,lambda)
+	println(X[2:2,1:size(X,2)])
 	funcVal = 0	
+	# compute likelihood for each point
 	for i in 1:size(X,1)
-		funcVal += log(1 + exp(-y[i]*theta*X[i:i,1:size(X,2)]))
+		funcVal += log(1 + exp(-y[i]*theta*X[i:i,1:size(X,2)])) + lambda/2*norm(theta)^2
 	end
-	funcVal += lambda/2*norm(theta)^2	
+	return funcVal
 end
 
 function gradLogLikelihood(X,y,theta,lambda)
