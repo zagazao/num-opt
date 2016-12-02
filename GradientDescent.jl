@@ -1,8 +1,8 @@
 function logLikelihood(X,y,theta,lambda)	
 	println(view(X,:,1))
 	funcVal = 0	
-	for i in 1:size(X,2)
-		funcVal += log(1 + exp(-y[i]*theta'*view(X,:,i)))
+	for i in 1:size(X,1)
+		funcVal += log(1 + exp(-y[i]*theta*X[i:i,1:size(X,2)]))
 	end
 	funcVal += lambda/2*norm(theta)^2	
 end
@@ -13,9 +13,9 @@ function gradLogLikelihood(X,y,theta,lambda)
 	for i in 1:size(X,1)
 		tmp = 0
 		for j in 1:size(X,2)
-			col = view(X,:,j)
-			tmp = -y[i]*col[i] * exp(theta'*col)
-			tmp = tmp/(1+exp(-y[j]*theta'*view(X,:,j))[1])
+			col = X[i:i,1:size(X,2)]
+			tmp = -y[i]*col[i] * exp(theta*col)
+			#tmp = tmp/(1+exp(-y[j]*theta'*view(X,:,j))[1])
 		end
 		#println(tmp)		
 		append!( array, tmp )
@@ -26,19 +26,18 @@ end
 function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose=false)
 	
 	# x in r^n*m (input vector) m*n = m zeilen bei n spalten
-	m = size(X,2) # i have m datapoints
-	n = size(X,1) # n = dimension of the problem	
+	m = size(X,1) # i have m datapoints
+	n = size(X,2) # n = dimension of the problem	
 	#theta =  rand(1:10,n) # r^n
 	theta = rand(n)
 	alpha = 0.1
 	multiplier = 0.5
 	
-	for i in 1:m
-    	col = view(X,:,i)
-    	println("DATAPOINT :")
-		println(string(col) * " <-> " * string(y[i]))
+	for i in 1:n
+    #	col = view(X,:,i)
+    #	println("DATAPOINT :")
+	#	println(string(col) * " <-> " * string(y[i]))
 	end
-	f(x) = x
 	optimal = false
 	for i in 1:maxiter
 		# check optimality
@@ -55,7 +54,6 @@ function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose
 			println("Stopping criterion value : " * string(norm(theta,Inf)))
 			println("Stepsize of linesearch : " * string(alpha))	
 			println("Number of linesearch iterations : " * string(i))
-			println("Thetha" * string(theta))
 		end
 		# descent
 		#TODO: schrink alpha
@@ -80,27 +78,19 @@ function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose
 	return (theta,"maxIter")
 end
 
-numDataPoints = 100
-numDimension = 20
+dataLocation = "data/mnist67.scale.1k.mat"
 
-# create matrix
-A = rand(1:10,numDimension,numDataPoints) # create dataset
-println(A)
-# create labels
-labels = rand(0:1,1,numDataPoints)
+using MAT
 
-println("LABELS")
-println(labels)
-# n dimension column vector
-randomTheta = rand(numDimension,1)
-println("INIT THETA")
-println(randomTheta)
+# 784 dimensions
+# 1000 data points
+file = matopen(dataLocation)
+tmp = read(file, "X")
 
+X = full(tmp)
+y = read(file,"y")
 
-#ensure A^m*n => x is length m
-println(logregGD(A,labels,0.1,1e-4,5,25,true))
-#println(logregGD(A,labels,0.1,1e-4,1000,25,true))
-#println(logLikelihood(A,labels,randomTheta,0.1,1e-4,1000,25,true))
+println(logregGD(X,y,0.1,1e-4,5,25,true))
 
-#println(logLikelihood(A,labels,randomTheta,0.1,1e-4,10,25,true))
+println(length(y))
 
