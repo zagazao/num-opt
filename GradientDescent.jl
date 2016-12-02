@@ -1,87 +1,79 @@
+using MAT
+
 function logLikelihood(X,y,theta,lambda)
-	println(X[2:2,1:size(X,2)])
 	funcVal = 0	
-	# compute likelihood for each point
+	# compute likelihood for each data-point
 	for i in 1:size(X,1)
-		funcVal += log(1 + exp(-y[i]*theta*X[i:i,1:size(X,2)])) + lambda/2*norm(theta)^2
+		x = X[i:i,1:size(X,2)]
+		funcVal += log(1+ exp(-y[i]*theta'*x')) + lambda/2*norm(theta)^2
 	end
-	return funcVal
+	return funcVal[1]
 end
 
 function gradLogLikelihood(X,y,theta,lambda)
 	# compute n gradient values and sum them up.
 	array = zeros(0)
-	for i in 1:size(X,1)
+	for i in 1:size(X,2)
 		tmp = 0
-		for j in 1:size(X,2)
-			col = X[i:i,1:size(X,2)]
-			tmp = -y[i]*col[i] * exp(theta*col)
-			#tmp = tmp/(1+exp(-y[j]*theta'*view(X,:,j))[1])
-		end
-		#println(tmp)		
+		col = X[i:i,1:size(X,2)]
+		exponential = exp(-y[i]*theta'*col')
+		tmp = (-y[i]*col[i] * exponential)/(1+exponential)
 		append!( array, tmp )
 	end
 	return array
 end
 
 function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose=false)
-	
 	# x in r^n*m (input vector) m*n = m zeilen bei n spalten
 	m = size(X,1) # i have m datapoints
 	n = size(X,2) # n = dimension of the problem	
-	#theta =  rand(1:10,n) # r^n
-	theta = rand(n)
-	alpha = 0.1
+	theta = ones(n)
 	multiplier = 0.5
 	
-	for i in 1:n
-    #	col = view(X,:,i)
-    #	println("DATAPOINT :")
-	#	println(string(col) * " <-> " * string(y[i]))
-	end
-	optimal = false
+	optimal = false	
+	
+	likelihood = Inf
 	for i in 1:maxiter
-		# check optimality
-		#if norm(theta,Inf) < 1 #TODO: use grad(f(theta)) 
-	#		return (theta,"optimal")
-	#	end
+	
+		alpha = 1
+		gradient = gradLogLikelihood(X,y,theta,lambda)
+		gradient = gradient / norm(gradient)
+		likelihood = logLikelihood(X,y,theta,lambda)
+		# check optimality with inf norm
+		if norm(gradient,Inf) < epsilon
+			return (theta,"optimal")
+		end
+		# find step size
+		lineSearchIter = 0
+		for j in 1:maxLSiter
+			f_xk_alpha_k = logLikelihood(X,y,theta-(alpha*-gradient),lambda)
+			f_xk_plus_grad = likelihood + (epsilon*alpha*gradient' * -gradient)[1]
+			#println(string(f_xk_alpha_k) * "<" * string(f_xk_plus_grad))
 		
+			if  ! (f_xk_alpha_k < f_xk_plus_grad)
+				# stop if left smaller than right
+				alpha = alpha * multiplier		
+				lineSearchIter += 1
+			else 
+				println("BREAK !!!!!!!!!")
+			end	
+		end
 		# verbose
-		if verbose
-		
-			likelihood = logLikelihood(X,y,theta,lambda)
+		println(typeof(likelihood))
+		if verbose		
 			println("Iteration : " * string(i))
 			println("Objective Value : " * string(likelihood))
-			println("Stopping criterion value : " * string(norm(theta,Inf)))
+			println("Stopping criterion value : " * string(norm(gradient,Inf)))
 			println("Stepsize of linesearch : " * string(alpha))	
-			println("Number of linesearch iterations : " * string(i))
-		end
+			println("Number of linesearch iterations : " * string(lineSearchIter))
+		end		
 		# descent
-		#TODO: schrink alpha
-		println("VAL")		
-		val = gradLogLikelihood(X,y,theta,lambda)
-		println(val)
-		println("ALPHA*VAL")
-		println(alpha*val)
-		println("THETA ")
-		println(theta)
-		println("THETA + VAL")
-		println(theta + val)
-		theta = theta + val
-		#theta +=
-		#theta += val * alpha
-		# x_k+1 = x_k + alpha_K*p_k
-		# p_k search direction
-		# alpha_k stepsize
-		println("THETA ")
-		println(theta)
+		theta = theta + alpha * -gradient
 	end
 	return (theta,"maxIter")
 end
 
 dataLocation = "data/mnist67.scale.1k.mat"
-
-using MAT
 
 # 784 dimensions
 # 1000 data points
@@ -91,7 +83,4 @@ tmp = read(file, "X")
 X = full(tmp)
 y = read(file,"y")
 
-println(logregGD(X,y,0.1,1e-4,5,25,true))
-
-println(length(y))
-
+println(logregGD(X,y,0.1,1e-4,1000,25,true))
