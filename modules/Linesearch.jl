@@ -2,12 +2,10 @@ module LineSearch
 
 export backTrackingLS,wolfeLineSearch
 
-function backTrackingLS(f,g,maxLSiter,c1,θ,∇)
+function backTrackingLS(f,g,maxLSiter,c1,θ,∇,fval)
     # θ is column vector
     α = 1
-    lineSearchIter = 0     
-    #∇ = g(θ) 
-    fval = f( θ )
+    lineSearchIter = 0 
     for i in 1:maxLSiter
         f_xk_alpha_k = f( θ + α * -∇)
         f_xk_plus_grad = fval + ( c1 * α * ∇' * -∇)[1] 
@@ -23,14 +21,14 @@ function backTrackingLS(f,g,maxLSiter,c1,θ,∇)
 end
 
 # function / gradient-function / direction / ls iter / zoom iter / c1 / v2 / theta
-function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad) 
+function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval) 
     # NEED ITERATION COUNTER
     a_0 = 0.0
     a_iminus1 = a_0
     a_i = 1.0
     a_max = 65536.0
     
-    phi_0 = f(xk)    
+    phi_0 = fval    
     phi_a_iminus1 = phi_0
     phi_a_i = NaN
 
@@ -65,13 +63,21 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad)
                 
         phi_a_iminus1 = phi_a_i
     end
-    return (0.1,20)
+    return (a_i,maxLSiter)
 end
 
 function zoom(alpha_l, alpha_u,maxzoomiter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
-    for i in 1:maxzoomiter
-        phi_prime_al = (pk'*g(xk + alpha_l))[1]
-        phi_prime_au = (pk'*g(xk + alpha_u))[1]
+    # cache gradients and notice which changed to not recomputed both every time
+   alpha_l_changed = false
+   alpha_u_changed = false
+   
+   phi_prime_al = (pk'*g(xk + alpha_l))[1]
+   phi_prime_au = (pk'*g(xk + alpha_u))[1]
+   
+   for i in 1:maxzoomiter
+        @printf("zoomiter %i\n",i)
+        alpha_l_changed = false
+        alpha_u_changed = false
        
         phi_al = f(xk + alpha_l*pk)
         phi_au = f(xk + alpha_u*pk)
@@ -85,6 +91,7 @@ function zoom(alpha_l, alpha_u,maxzoomiter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
         # check condition 
         if phi_alpha_j > phi_0 + c1 * alpha_j * phi_prime_0 || phi_alpha_j >= phi_al
             alpha_u = alpha_j
+            alpha_u_changed = true
         else
             phi_prime_aj = (pk' * g(xk + alpha_j * pk))[1]
             if abs(phi_prime_aj) <= -c2*phi_prime_0
@@ -92,11 +99,19 @@ function zoom(alpha_l, alpha_u,maxzoomiter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
             end
             if phi_prime_aj* (alpha_u-alpha_l) >= 0
                 alpha_u = alpha_l
+                alpha_u_changed = true
             end
-            alpha_l = alpha_j            
+            alpha_l = alpha_j 
+            alpha_l_changed = true
         end
         if i == maxzoomiter  
             return (alpha_j,maxzoomiter)
+        end
+        if alpha_l_changed        
+            phi_prime_al = (pk'*g(xk + alpha_l))[1]
+        end
+        if alpha_u_changed       
+            phi_prime_au = (pk'*g(xk + alpha_u))[1]
         end
     end
 end
