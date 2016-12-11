@@ -19,47 +19,60 @@ X = full(tmp)
 y = read(file,"y")
 println("Loaded dataset")
 
-rosen_x0 = zeros(2,1)
-
-println(g_rosenbrock2([1;1]))
-
-# optimize rosenbrock with backtracking linesearch and default pk
-(x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock2,1e-12,5000,20,20,1e-4,.9,"bt","gd")
-
-plotArray(vals,"rosen-fval.svg")
-plotArray(stops,"rosen-stop.svg")
-
-#println(status)
-#println(x)
-#(x, status )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,1000,25,20,1e-4,.9,"bt","gd")
-# (x, status )= qn(3000,f_square,g_square,1e-12,1000,20,20,1e-4,.9,"wolfe","gd")
-
-x0 = zeros(size(X,2),1)
+rosenbrock = false
+logreg = true
 
 lambda = 0.1
-iter = 100
+iter = 10
 
-println("Backtracking GradientDescent LogReg")
-@time (x, status,vals,stops )= qn(x0,f_logreg(X,y,x0,lambda),g_logreg(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"bt","gd")
-println(evaluate(X,y,x))
+if rosenbrock
+    rosen_x0 = zeros(2,1)
 
-plotArray(vals,"gd-fval.svg")
-plotArray(stops,"gd-stop.svg")
+    # optimize rosenbrock with backtracking linesearch and default pk
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"bt","gd")
 
-println("WolfeLS GradientDescent LogReg")
-@time (x, status,vals,stops )== qn(x0,f_logreg(X,y,x0,lambda),g_logreg(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
-println(evaluate(X,y,x))
+    plotArray(vals,"../plots/rosen-fval.svg")
+    plotArray(stops,"../plots/rosen-stop.svg")
 
-plotArray(vals,"wolfe-fval.svg")
-plotArray(stops,"wolfe-stop.svg")
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"wolfe","gd")
 
-println("Wolfe BFGS LogReg")
-@time (x, status,vals,stops )== qn(x0,f_logreg(X,y,x0,lambda),g_logreg(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
-println(evaluate(X,y,x))
+    plotArray(vals,"../plots/rosen-wolfe-fval.svg")
+    plotArray(stops,"../plots/rosen-wolfe-stop.svg")
 
-plotArray(vals,"bfgs-fval.svg")
-plotArray(stops,"bfgs-stop.svg")
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"wolfe","bfgs")
 
-println(status)
+    plotArray(vals,"../plots/rosen-bfgs-fval.svg")
+    plotArray(stops,"../plots/rosen-bfgs-stop.svg")
+end 
 
-println(evaluate(X,y,x))
+if logreg
+    x0 = zeros(size(X,2),1)
+
+    if true
+        println("Backtracking GradientDescent LogReg")
+        @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"bt","gd")
+        println(evaluate(X,y,x))
+        
+        plotDoubleArray(vals,stops,"gd-bt.svg")
+        plotArray(vals,"gd-fval.svg")
+        plotArray(stops,"gd-stop.svg")
+    end
+    if false
+        println("WolfeLS GradientDescent LogReg")
+        @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
+        println(evaluate(X,y,x))
+
+        plotArray(vals,"wolfe-fval.svg")
+        plotArray(stops,"wolfe-stop.svg")
+    end
+   
+    if false
+        println("Wolfe BFGS LogReg")
+        @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
+        println(evaluate(X,y,x))
+
+        plotArray(vals,"bfgs-fval.svg")
+        plotArray(stops,"bfgs-stop.svg")
+    end
+
+end

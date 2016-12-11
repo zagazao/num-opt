@@ -2,11 +2,11 @@ module LineSearch
 
 export backTrackingLS,wolfeLineSearch
 
-function backTrackingLS(f,g,maxLSiter,c1,θ)
+function backTrackingLS(f,g,maxLSiter,c1,θ,∇)
     # θ is column vector
     α = 1
     lineSearchIter = 0     
-    ∇ = g(θ) 
+    #∇ = g(θ) 
     fval = f( θ )
     for i in 1:maxLSiter
         f_xk_alpha_k = f( θ + α * -∇)
