@@ -7,9 +7,11 @@ function backTrackingLS(f,g,maxLSiter,c1,θ)
     α = 1
     lineSearchIter = 0     
     ∇ = g(θ) 
+    fval = f( θ )
     for i in 1:maxLSiter
         f_xk_alpha_k = f( θ + α * -∇)
-        f_xk_plus_grad = f( θ ) + ( c1 * α * ∇' * -∇)[1]        
+        f_xk_plus_grad = fval + ( c1 * α * ∇' * -∇)[1] 
+		#@printf("%f \t < \t %f\n",f_xk_alpha_k,f_xk_plus_grad)       
         if  ! (f_xk_alpha_k < f_xk_plus_grad[1])
             α = α * 0.5
             lineSearchIter += 1
@@ -41,7 +43,7 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk)
         # check wolfe condition
         if phi_a_i > phi_0 + c1 * a_i * phi_prime_0 ||
             (i > 1 && phi_a_i >= phi_a_iminus1)
-            (a_star,iter) = zoom(a_iminus1,a_i,maxZoomIter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2) 
+            (a_star,iter) = zoom(a_iminus1,a_i,maxZoomIter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
             return (a_star, i , iter)
         end
         
@@ -53,7 +55,7 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk)
         end
         
         if phi_prime_a_i >= 0
-            (a_star,iter) = zoom(a_i,a_iminus1,maxZoomIter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2) 
+            (a_star,iter) = zoom(a_i,a_iminus1,maxZoomIter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)  
             return (a_star, i , iter)         
         end
         
