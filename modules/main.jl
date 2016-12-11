@@ -48,22 +48,24 @@ end
 if logreg
     x0 = zeros(size(X,2),1)
 
-    if true
+    if false
         println("Backtracking GradientDescent LogReg")
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"bt","gd")
         println(evaluate(X,y,x))
         
-        plotDoubleArray(vals,stops,"gd-bt.svg")
-        plotArray(vals,"gd-fval.svg")
-        plotArray(stops,"gd-stop.svg")
+        plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
+        plotArray(vals,"../plots/gd-fval.svg")
+        plotArray(stops,"../plots/gd-stop.svg")
     end
-    if false
+    if true
         println("WolfeLS GradientDescent LogReg")
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
         println(evaluate(X,y,x))
 
-        plotArray(vals,"wolfe-fval.svg")
-        plotArray(stops,"wolfe-stop.svg")
+        
+        plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
+        plotArray(vals,"../plots/wolfe-fval.svg")
+        plotArray(stops,"../plots/wolfe-stop.svg")
     end
    
     if false
@@ -71,8 +73,8 @@ if logreg
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
         println(evaluate(X,y,x))
 
-        plotArray(vals,"bfgs-fval.svg")
-        plotArray(stops,"bfgs-stop.svg")
+        plotArray(vals,"../plots/bfgs-fval.svg")
+        plotArray(stops,"../plots/bfgs-stop.svg")
     end
 
 end

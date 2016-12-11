@@ -23,7 +23,7 @@ function backTrackingLS(f,g,maxLSiter,c1,θ,∇)
 end
 
 # function / gradient-function / direction / ls iter / zoom iter / c1 / v2 / theta
-function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk) 
+function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad) 
     # NEED ITERATION COUNTER
     a_0 = 0.0
     a_iminus1 = a_0
@@ -34,7 +34,7 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk)
     phi_a_iminus1 = phi_0
     phi_a_i = NaN
 
-    phi_prime_0 = (pk'*g(xk))[1] 
+    phi_prime_0 = (pk'*grad)[1] 
     phi_prime_a_i = NaN
     
     for i in 1:maxLSiter
