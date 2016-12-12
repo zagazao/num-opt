@@ -67,6 +67,37 @@ function g_logreg2(X,y,θ,λ)
     end
 end
 
+function g_logreg3(X,y,θ,λ)
+    return function(θ)
+        data = X
+        labels = y
+        λ = λ
+        # i want column vector 
+        array = zeros(size(data,2))
+        for i in 1:size(data,1)
+        	x_i = data[i:i,1:size(data,2)]'
+        	exponential = exp(-labels[i]*θ'*x_i)
+        	for j in size(data,2)
+        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential) + λ*θ[j]
+        	end        
+        end
+        return array
+        
+        # n = 784 => gradient size
+        #for j in 1:size(data,2)
+        #    tmp = 0
+        #    for i in 1:size(data,1)
+        #        # col = 784*1 column vector
+        #        x_i = data[i:i,1:size(data,2)]'
+        #        exponential = exp(-labels[i]*θ'*x_i)
+        #        tmp += (-labels[i]*x_i[j] * exponential)/(1+exponential) + λ*θ[j]
+        #    end
+        #    append!( array, tmp )
+        #end
+        #return array
+    end
+end
+
 
 function f_rosenbrock(x_k)
     return 100*(x_k[2]-x_k[1]^2)^2+(1-x_k[1])^2
