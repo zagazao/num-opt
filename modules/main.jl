@@ -23,8 +23,8 @@ rosenbrock = false
 logreg = true
 number6 = false
 
-lambda = 0.1
-iter = 150
+lambda = 0
+iter = 1000
 
 
 rosen_x0 = zeros(2,1)

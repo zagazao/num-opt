@@ -36,7 +36,7 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval)
     phi_prime_a_i = NaN
     
     for i in 1:maxLSiter
-        #@printf("zoom : ( ai-1 = %f , a1 = %f )\n",a_iminus1,a_i)
+        #@printf("wLS : ( ai-1 = %f , a1 = %f )\n",a_iminus1,a_i)
         
         phi_a_i = f(xk + a_i*pk)
         while isinf(phi_a_i)
@@ -77,25 +77,25 @@ function zoom(alpha_l, alpha_u,maxzoomiter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
    phi_prime_al = (pk'*g(xk + alpha_l * pk))[1]
    phi_prime_au = (pk'*g(xk + alpha_u * pk))[1]
    
-   @printf("phi_prime_al = %f, phi_prime_a_u = %f\n",phi_prime_al,phi_prime_au) 
-   @printf(" (%f , %f )\n",alpha_l, alpha_u)
+   #@printf(" (%f , %f )\n",alpha_l, alpha_u)
    
    for i in 1:maxzoomiter       
         phi_al = f(xk + alpha_l*pk)
         phi_au = f(xk + alpha_u*pk)
         
+        #@printf("phi_prime_al = %f, phi_prime_a_u = %f\n",phi_prime_al,phi_prime_au) 
         #@printf("phi_al = %f, phi_au = %f\n",phi_al,phi_au)
         
         d1 = phi_prime_al + phi_prime_au - 3 * (phi_al - phi_au) / (alpha_l - alpha_u)
-        d2 = sqrt(d1*d1-phi_prime_al*phi_prime_au) # WTF is sign(a+b))
-       
+        d2 = sign(alpha_u-alpha_l)*sqrt(d1*d1-phi_prime_al*phi_prime_au) # WTF is sign(a+b))
+        
         #@printf("%f \n",(phi_prime_au - phi_prime_al + 2*d2))
                 
         alpha_j = alpha_u - (alpha_u-alpha_l) * (phi_prime_au + d2 - d1) / (phi_prime_au - phi_prime_al + 2*d2)
        
         # check for NaN because too big alpha_u
                
-        @printf("| iter = %i | alpha_j = %f | (%f , %f) |d1 = %f | d2 = %f |\n",i,alpha_j,alpha_l,alpha_u,d1,d2)   
+        #@printf("| iter = %i | alpha_j = %f | (%f , %f) |d1 = %f | d2 = %f |\n",i,alpha_j,alpha_l,alpha_u,d1,d2)   
         
         phi_alpha_j = f( xk + alpha_j * pk)
         # check condition 

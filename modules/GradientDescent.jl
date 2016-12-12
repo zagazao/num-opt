@@ -61,7 +61,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
             # sk = x_k+1 - xk == xk + alpha * - grad - xk = alpha * - grad
             s_k = α * pk
             y_k = grad_new - ∇
-            H_k = H_k - (H_k * s_k * s_k' * H_k) / (s_k' * H_k * s_k)
+            H_k = H_k - (H_k * s_k * s_k' * H_k) / (s_k' * H_k * s_k) + (y_k * y_k') / ( y_k' * s_k)
             if H_k == H_0
                 println("Still identitymatrix...")
             end
