@@ -23,8 +23,12 @@ rosenbrock = false
 logreg = true
 number6 = false
 
-lambda = 0
-iter = 5
+lambda = 0.1
+iter = 150
+
+
+rosen_x0 = zeros(2,1)
+#(x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"wolfe","gd")
 
 if rosenbrock
     rosen_x0 = zeros(2,1)
@@ -69,7 +73,7 @@ end
 if logreg
     x0 = zeros(size(X,2),1)
 
-    if true
+    if false
         println("Backtracking GradientDescent LogReg")
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"bt","gd")
         println(evaluate(X,y,x))
@@ -80,22 +84,21 @@ if logreg
     end
     if false
         println("WolfeLS GradientDescent LogReg")
-        @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,5,5,1e-4,.9,"wolfe","gd")
+        @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
         println(evaluate(X,y,x))
-
         
-        plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
-        plotArray(vals,"../plots/wolfe-fval.svg")
-        plotArray(stops,"../plots/wolfe-stop.svg")
+        #plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
+        #plotArray(vals,"../plots/wolfe-fval.svg")
+        #plotArray(stops,"../plots/wolfe-stop.svg")
     end
    
-    if false
+    if true
         println("Wolfe BFGS LogReg")
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
         println(evaluate(X,y,x))
 
-        plotArray(vals,"../plots/bfgs-fval.svg")
-        plotArray(stops,"../plots/bfgs-stop.svg")
+        #plotArray(vals,"../plots/bfgs-fval.svg")
+        #plotArray(stops,"../plots/bfgs-stop.svg")
     end
 
 end

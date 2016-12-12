@@ -21,8 +21,9 @@ function f_logreg(X,y,θ,λ)
         for i in 1:size(data,1)
             # x = 784*1 column vector
             x_i = data[i:i,1:size(data,2)]'
-            funcVal += log(1+ exp(-labels[i]*θ'*x_i)) + λ/2*(norm(θ,2)^2)
+            funcVal += log(1+ exp(-labels[i]*θ'*x_i))
         end
+        funcVal += λ/2*(norm(θ,2)^2)
         return funcVal[1]
     end
 end
@@ -51,50 +52,20 @@ function g_logreg2(X,y,θ,λ)
         data = X
         labels = y
         λ = λ
-        array = zeros(0)
-        # n = 784 => gradient size
-        for j in 1:size(data,2)
-            tmp = 0
-            for i in 1:size(data,1)
-                # col = 784*1 column vector
-                x_i = data[i:i,1:size(data,2)]'
-                exponential = exp(-labels[i]*θ'*x_i)
-                tmp += (-labels[i]*x_i[j] * exponential)/(1+exponential) + λ*θ[j]
-            end
-            append!( array, tmp )
-        end
-        return array
-    end
-end
-
-function g_logreg3(X,y,θ,λ)
-    return function(θ)
-        data = X
-        labels = y
-        λ = λ
         # i want column vector 
         array = zeros(size(data,2))
         for i in 1:size(data,1)
         	x_i = data[i:i,1:size(data,2)]'
-        	exponential = exp(-labels[i]*θ'*x_i)
-        	for j in size(data,2)
-        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential) + λ*θ[j]
-        	end        
+        	exponential = exp(-labels[i]*θ'*x_i)[1]
+        	for j in 1:size(data,2)
+        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential) 
+                if i == 1
+                    array[j] +=  λ*θ[j]
+                end
+            end      
+            
         end
         return array
-        
-        # n = 784 => gradient size
-        #for j in 1:size(data,2)
-        #    tmp = 0
-        #    for i in 1:size(data,1)
-        #        # col = 784*1 column vector
-        #        x_i = data[i:i,1:size(data,2)]'
-        #        exponential = exp(-labels[i]*θ'*x_i)
-        #        tmp += (-labels[i]*x_i[j] * exponential)/(1+exponential) + λ*θ[j]
-        #    end
-        #    append!( array, tmp )
-        #end
-        #return array
     end
 end
 

@@ -29,7 +29,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
            return (xk,"optimal",val_array,stop_array)
         end
         if abs(oval - fval) < eps
-            #return (xk, "NO DECREASE",val_array,stop_array)
+            return (xk, "NO DECREASE",val_array,stop_array)
         end
         
         α = 1
@@ -46,7 +46,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
         lsZiter = 0
         if ls == "bt"
             α,iter = backTrackingLS(f,g,maxLSiter,c1,xk,∇,fval)
-        elseif ls == "wolfe"
+        elseif ls == "wolfe"            
             α,iter,lsZiter = wolfeLineSearch(f,g,pk,maxLSiter,maxzoomiter,c1,c2,xk,∇,fval) 
         end
        
