@@ -58,7 +58,7 @@ function g_logreg2(X,y,θ,λ)
         	x_i = data[i:i,1:size(data,2)]'
         	exponential = exp(-labels[i]*θ'*x_i)[1]
         	for j in 1:size(data,2)
-        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential)
+        	   array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential)
                 if i == 1
                     array[j] +=  λ*θ[j]
                 end
