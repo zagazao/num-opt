@@ -60,7 +60,22 @@ tmp = read(file, "X")
 X = full(tmp)
 y = read(file,"y")
 
-theta, state = logregGD(X,y,0.1,1e-5,1000,20,true)
+theta, state = logregGD(X,y,0,1e-4,1000,20,true)
+@printf("Optimization finished with state %s.\n",state)
+accuracy = evaluate(X,y,theta)
+@printf("Accuracy of solution : %f %%.\n",accuracy*100)
+
+theta, state = logregGD(X,y,0.1,1e-4,1000,20,true)
+@printf("Optimization finished with state %s.\n",state)
+accuracy = evaluate(X,y,theta)
+@printf("Accuracy of solution : %f %%.\n",accuracy*100)
+
+theta, state = logregGD(X,y,100,1e-4,1000,20,true)
+@printf("Optimization finished with state %s.\n",state)
+accuracy = evaluate(X,y,theta)
+@printf("Accuracy of solution : %f %%.\n",accuracy*100)
+
+theta, state = logregGD(X,y,1000,1e-4,1000,20,true)
 @printf("Optimization finished with state %s.\n",state)
 accuracy = evaluate(X,y,theta)
 @printf("Accuracy of solution : %f %%.\n",accuracy*100)
