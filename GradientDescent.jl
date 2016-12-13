@@ -1,6 +1,6 @@
-include("modules\\Functions.jl")
-include("modules\\Evaluate.jl")
-include("modules\\Linesearch.jl")
+include("modules/Functions.jl")
+include("modules/Evaluate.jl")
+include("modules/Linesearch.jl")
 
 using MAT
 using Functions
