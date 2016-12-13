@@ -6,7 +6,7 @@ function predict(theta,x)
 	return 1 / (1+exp(-theta'*x')[1])
 end
 
-function evaluate(X,y,theta)
+function evaluate(X,y,theta,verbose=false)
 	positiveHits = 0
 	for i in 1:size(X,1)
 		prediction = predict(theta,X[i:i,1:size(X,2)])
@@ -24,7 +24,9 @@ function evaluate(X,y,theta)
 		if y[i] == 1.0
 			labelString = "+1.0"
 		end
-		#@printf("Prediction : %s | Label : %s | Accuracy %f \n",label,labelString,positiveHits / i)
+		if verbose
+			@printf("Prediction : %s | Label : %s | Accuracy %f \n",label,labelString,positiveHits / i)
+		end
 	end
 	return positiveHits / size(X,1)
 end
