@@ -15,7 +15,7 @@ function f_logreg(X,y,θ,λ)
         data = X
         labels = y
         λ = λ
-        funcVal = 0	
+        funcVal = 0
         # M[i:i,1:size(M,2)] -> take i-th column / datapoint
         # size(data,1) = 1000 datapoints
         for i in 1:size(data,1)
@@ -52,23 +52,22 @@ function g_logreg2(X,y,θ,λ)
         data = X
         labels = y
         λ = λ
-        # i want column vector 
+        # i want column vector
         array = zeros(size(data,2))
         for i in 1:size(data,1)
         	x_i = data[i:i,1:size(data,2)]'
         	exponential = exp(-labels[i]*θ'*x_i)[1]
         	for j in 1:size(data,2)
-        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential) 
+        		array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential)
                 if i == 1
                     array[j] +=  λ*θ[j]
                 end
-            end      
-            
+            end
+
         end
         return array
     end
 end
-
 
 function f_rosenbrock(x_k)
     return 100*(x_k[2]-x_k[1]^2)^2+(1-x_k[1])^2
