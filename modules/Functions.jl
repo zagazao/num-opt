@@ -1,6 +1,6 @@
 module Functions
 
-export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg2
+export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg2,sub_g_logreg
 
 function f_square(x)
     return x^2
@@ -66,6 +66,26 @@ function g_logreg2(X,y,θ,λ)
 
         end
         return array
+    end
+end
+
+function sub_g_logreg(X,y,Θ,λ)
+    return function(Θ)
+      X = X
+      y = y
+      λ = λ
+      # size of data set
+      m = size(X,2)
+      # pull one data point random
+      idx = rand(0:m-1)
+      # compute gradient for this data point
+      x_i = X[idx:idx,1:size(X,2)]'
+      array = zeros(size(X,2))
+      exponential = exp(-y[idx]*Θ'*x_i)[1]
+      for j in 1:size(X,2)
+         array[j] = array[j] + (-y[idx]*x_i[j] * exponential)/(1+exponential) + λ*Θ[j]
+      end
+      return array
     end
 end
 

@@ -2,6 +2,7 @@ include("./Linesearch.jl")
 include("./Functions.jl")
 include("./GradientDescent.jl")
 include("./Evaluate.jl")
+include("./SGD.jl")
 include("./Plotting.jl")
 
 using Functions
@@ -20,7 +21,13 @@ y = read(file,"y")
 println("Loaded dataset")
 
 rosenbrock = false
-logreg = true
+logreg = false
+sgd_opt = true
+
+if sgd_opt
+  x0 = zeros(size(X,2),1)
+  sgd(x0,f_logreg(X,y,x0,0.1),sub_g_logreg(X,y,x0,0.1),1e-8,5000,1/5000)
+end
 
 lambda = 0
 iter = 100
