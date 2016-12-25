@@ -23,23 +23,23 @@ rosenbrock = false
 logreg = true
 
 lambda = 0
-iter = 1000
+iter = 100
 
 if rosenbrock
     rosen_x0 = zeros(2,1)
 
     # optimize rosenbrock with backtracking linesearch and default pk
-    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"bt","gd")
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,iter,20,20,1e-4,.9,"bt","gd")
 
     plotArray(vals,"../plots/rosen-fval.svg")
     plotArray(stops,"../plots/rosen-stop.svg")
 
-    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"wolfe","gd")
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
 
     plotArray(vals,"../plots/rosen-wolfe-fval.svg")
     plotArray(stops,"../plots/rosen-wolfe-stop.svg")
 
-    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,5000,20,20,1e-4,.9,"wolfe","bfgs")
+    (x, status,vals, stops )= qn(rosen_x0,f_rosenbrock,g_rosenbrock,1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
 
     plotArray(vals,"../plots/rosen-bfgs-fval.svg")
     plotArray(stops,"../plots/rosen-bfgs-stop.svg")
@@ -63,9 +63,9 @@ if logreg
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","gd")
         println(evaluate(X,y,x))
 
-        #plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
-        #plotArray(vals,"../plots/wolfe-fval.svg")
-        #plotArray(stops,"../plots/wolfe-stop.svg")
+        plotDoubleArray(vals,stops,"../plots/gd-bt.svg")
+        plotArray(vals,"../plots/wolfe-fval.svg")
+        plotArray(stops,"../plots/wolfe-stop.svg")
     end
 
     if true
@@ -73,8 +73,10 @@ if logreg
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
         println(evaluate(X,y,x))
 
-        #plotArray(vals,"../plots/bfgs-fval.svg")
-        #plotArray(stops,"../plots/bfgs-stop.svg")
+        plotDoubleArray(vals,stops,"../plots/wolfe-bfgs.svg")
+
+        plotArray(vals,"../plots/bfgs-fval.svg")
+        plotArray(stops,"../plots/bfgs-stop.svg")
     end
 
 end

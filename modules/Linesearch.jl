@@ -25,7 +25,7 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval)
     # NEED ITERATION COUNTER
     a_0 = 0.0
     a_iminus1 = a_0
-    a_i = 1
+    a_i = 0.1
     a_max = 65536.0
 
     phi_0 = fval

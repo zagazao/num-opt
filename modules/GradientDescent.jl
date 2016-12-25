@@ -10,11 +10,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
     @printf("iter \t\t fval \t\t\t diff \t\t opt \t\t alp \t\t lsiter \n")
     xk = x0
     oval = Inf
-    if dir == "bfgs"
-        # n * n identity matrix
-        H_0 = eye(size(x0,1))
-        H_k = H_0
-    end
+    H_k = Inf
     grad_new = 0
     val_array = zeros(0)
     stop_array = zeros(0)
@@ -24,6 +20,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
 
         fval = f(xk)
         stoppingCriteria = norm(∇,Inf)
+
         append!( val_array, fval )
         append!( stop_array, stoppingCriteria )
 
@@ -31,7 +28,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
            return (xk,"optimal",val_array,stop_array)
         end
         if abs(oval - fval) < eps
-            return (xk, "NO DECREASE",val_array,stop_array)
+            #return (xk, "NO DECREASE",val_array,stop_array)
         end
 
         α = 1
@@ -42,7 +39,20 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
         if dir == "gd"
             pk = -∇
         elseif dir == "bfgs"
-            pk = -H_k * ∇
+            if i == 1
+                # n * n identity matrix
+                H_0 = eye(size(x0,1))
+                H_k = H_0
+            else
+              # update H_k+1
+              s_k = α * pk
+              y_k = grad_new - ∇
+              rho = 1 / dot(s_k,y_k)
+              Z = eye(size(x0,1)) - rho * y_k * s_k'
+              # H_k = H_k - (H_k * s_k * s_k' * H_k) / (s_k' * H_k * s_k) + (y_k * y_k') / ( y_k' * s_k)
+              H_k = Z'*H_k*Z + rho*s_k *s_k'
+              pk = -H_k * ∇
+            end
         end
         # compute stepsize by linesearch
         lsZiter = 0
@@ -58,16 +68,6 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
 
         # update values
         grad_new = g(xk)
-        if dir == "bfgs"
-            # update H_k+1
-            # sk = x_k+1 - xk == xk + alpha * - grad - xk = alpha * - grad
-            s_k = α * pk
-            y_k = grad_new - ∇
-            H_k = H_k - (H_k * s_k * s_k' * H_k) / (s_k' * H_k * s_k) + (y_k * y_k') / ( y_k' * s_k)
-            if H_k == H_0
-                println("Still identitymatrix...")
-            end
-        end
         oval = fval
         ∇ = grad_new
     end
