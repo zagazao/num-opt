@@ -21,8 +21,8 @@ y = read(file,"y")
 println("Loaded dataset")
 
 rosenbrock = false
-logreg = false
-sgd_opt = true
+logreg = true
+sgd_opt = false
 
 if sgd_opt
   x0 = zeros(size(X,2),1)
@@ -76,6 +76,7 @@ if logreg
     end
 
     if true
+        # TODO: PROBLEM = Stepsize gets to big and NaN is value
         println("Wolfe BFGS LogReg")
         @time (x, status,vals,stops ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg2(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"wolfe","bfgs")
         println(evaluate(X,y,x))

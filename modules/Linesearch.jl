@@ -32,18 +32,18 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval)
     phi_a_iminus1 = phi_0
     phi_a_i = NaN
 
+    # phi'(α) = innerProduct(pk, grad(x))
     phi_prime_0 = (pk'*grad)[1]
     phi_prime_a_i = NaN
 
     for i in 1:maxLSiter
-        #@printf("wLS : ( ai-1 = %f , a1 = %f )\n",a_iminus1,a_i)
 
-        phi_a_i = f(xk + a_i*pk)
-        while isinf(phi_a_i)
-            println("isinf")
-            a_i = a_i * 0.5
-            phi_a_i = f(xk + a_i*pk)
-        end
+
+        x_new = xk + a_i * pk
+        phi_a_i = f(x_new)
+
+        #@printf("wLS : ( ai-1 = %f , a1 = %f , phi_a_i = %f )\n",a_iminus1,a_i, phi_a_i)
+
         # check wolfe condition
         if phi_a_i > phi_0 + c1 * a_i * phi_prime_0 ||
             (i > 1 && phi_a_i >= phi_a_iminus1)
@@ -51,10 +51,9 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval)
             return (a_star, i , iter)
         end
 
-        phi_prime_a_i = (pk'*g(xk + a_i*pk))[1]
+        phi_prime_a_i = (pk'*g(x_new))[1]
         # check condition
         if abs(phi_prime_a_i) <= -c2*phi_prime_0
-            #println("BREAK")
             return (a_i,i,0)
         end
 

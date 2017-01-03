@@ -53,11 +53,11 @@ function g_logreg2(X,y,θ,λ)
         labels = y
         λ = λ
         # i want column vector
-        array = zeros(size(data,2))
-        for i in 1:size(data,1)
-        	x_i = data[i:i,1:size(data,2)]'
+        array = zeros(size(data,2)) # 784-column-vector
+        for i in 1:size(data,1) # datapoints
+        	x_i = data[i:i,1:size(data,2)]' # i-th datapoint
         	exponential = exp(-labels[i]*θ'*x_i)[1]
-        	for j in 1:size(data,2)
+        	for j in 1:size(data,2) # fill gradient-vector
         	   array[j] = array[j] + (-labels[i]*x_i[j] * exponential)/(1+exponential)
                 if i == 1
                     array[j] +=  λ*θ[j]
