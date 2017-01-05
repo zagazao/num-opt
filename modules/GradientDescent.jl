@@ -30,7 +30,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
            return (xk,"optimal",val_array,stop_array)
         end
         if abs(oval - fval) < eps
-            return (xk, "NO DECREASE",val_array,stop_array)
+            #return (xk, "NO DECREASE",val_array,stop_array)
         end
 
         α = 1

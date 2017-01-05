@@ -1,7 +1,9 @@
 module Functions
 
-export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg2,sub_g_logreg
-
+export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg,sub_g_logreg,f_svm,sub_g_svm
+#=
+Square-function with gradient
+=#
 function f_square(x)
     return x^2
 end
@@ -9,6 +11,10 @@ end
 function g_square(x)
     return 2*x
 end
+
+#=
+Logistic-regression loss-function, gradient and sub-gradient
+=#
 
 function f_logreg(X,y,θ,λ)
     return function(θ)
@@ -33,25 +39,6 @@ function g_logreg(X,y,θ,λ)
         data = X
         labels = y
         λ = λ
-        array = zeros(0)
-        # steepest direction for each dimension r^n = size(data,2)
-        for i in 1:size(data,2)
-            tmp = 0
-            # col = 784*1 column vector
-            x_i = data[i:i,1:size(data,2)]'
-            exponential = exp(-labels[i]*θ'*x_i)
-            tmp = (-labels[i]*x_i[i] * exponential)/(1+exponential) + λ*θ[i]
-            append!( array, tmp )
-        end
-        return array
-    end
-end
-
-function g_logreg2(X,y,θ,λ)
-    return function(θ)
-        data = X
-        labels = y
-        λ = λ
         # i want column vector
         array = zeros(size(data,2)) # 784-column-vector
         for i in 1:size(data,1) # datapoints
@@ -63,12 +50,12 @@ function g_logreg2(X,y,θ,λ)
                     array[j] +=  λ*θ[j]
                 end
             end
-
         end
         return array
     end
 end
 
+#TODO: improve by checking sub-gradient-constraint
 function sub_g_logreg(X,y,Θ,λ)
     return function(Θ)
       X = X
@@ -77,9 +64,10 @@ function sub_g_logreg(X,y,Θ,λ)
       # size of data set
       m = size(X,2)
       # pull one data point random
-      idx = rand(0:m-1)
+      idx = rand(1:m)
       # compute gradient for this data point
       x_i = X[idx:idx,1:size(X,2)]'
+      #@printf("X[%i:%i,1:%i]",idx,idx,size(X,2))
       array = zeros(size(X,2))
       exponential = exp(-y[idx]*Θ'*x_i)[1]
       for j in 1:size(X,2)
@@ -89,6 +77,51 @@ function sub_g_logreg(X,y,Θ,λ)
     end
 end
 
+#=
+SVM - Loss-function and gradient
+=#
+
+function f_svm(X,y,θ,λ)
+    return function(θ)
+        X = X
+        y = y
+        λ = λ
+        # datapoints
+        fval = 0
+        for i in 1:size(X,1)
+            x_i = X[i:i,1:size(X,2)]'
+            fval += max(0, (1 - y[i]*dot(θ,x_i)))
+        end
+        fval = fval / size(X,1)
+        fval += λ/2 * norm(θ,2)
+        return fval
+    end
+end
+
+function sub_g_svm(X,y,θ,λ)
+    return function(Θ)
+      X = X
+      y = y
+      λ = λ
+      # size of data set
+      m = size(X,2)
+      # pull one data point random
+      idx = rand(1:m)
+      # compute gradient for this data point
+      x_i = X[idx:idx,1:size(X,2)]'
+      #@printf("X[%i:%i,1:%i]",idx,idx,size(X,2))
+      array = zeros(size(X,2))
+      val = 1 - (y[idx] * dot(θ,x_i))
+      if val < 0
+          return λ * θ;
+      else
+          return -y[idx] * x_i + λ * θ;
+      end
+    end
+end
+#=
+Rosenbrock-function and its gradient.
+=#
 function f_rosenbrock(x_k)
     return 100*(x_k[2]-x_k[1]^2)^2+(1-x_k[1])^2
 end
