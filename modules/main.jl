@@ -2,8 +2,9 @@ include("./Linesearch.jl")
 include("./Functions.jl")
 include("./GradientDescent.jl")
 include("./Evaluate.jl")
-include("./SGD.jl")
 include("./Plotting.jl")
+include("./SGD.jl")
+include("./SAGA.jl")
 
 using Functions
 using MAT
@@ -21,13 +22,34 @@ println("Loaded dataset")
 
 rosenbrock = false
 logreg = false
-sgd_opt = false
-svm = true
+sgd_opt = true
+svm = false
+saga = false
+
+
+lambda = 0.1
+iter = 100
+
+if saga
+    # SAGA SVM
+    x0 = ones(size(X,2),1)
+    # println(eig(X))
+    # Lippschitz = largest eigenvalue of Hessian*Hessian'
+    lippschitz = 0.5
+    convexity = 0.5
+    iter = 3000
+    step = 0.1
+    f = f_svm(X,y,x0,lambda)
+    g = sub_g_x_svm()
+    (theta, strings, iter) = SAGA(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1))
+    println(evaluate(X,y,theta,"svm",true))
+end
+
 
 if svm
     x0 = ones(size(X,2),1)
-    f = f_svm(X,y,x0,1)
-    g = sub_g_svm(X,y,x0,1)
+    f = f_svm(X,y,x0,lambda)
+    g = sub_g_svm(X,y,x0,lambda)
     sgd_iter = 3000;
     sgd_step = 0.001 #1 / sgd_iter;
     (theta, state, vals, stops ) = @time sgd(x0,f,g,1e-8,sgd_iter,sgd_step)
@@ -36,13 +58,12 @@ end
 
 if sgd_opt
     sgd_iter = 10000;
-    sgd_step = 0.001;
+    sgd_step = 0.01;
     x0 = zeros(size(X,2),1)
-    @time sgd(x0,f_logreg(X,y,x0,10),sub_g_logreg(X,y,x0,10),1e-8,sgd_iter,sgd_step)
+    (theta, state, vals, stops )  = @time sgd2(x0,f_logreg(X,y,x0,lambda),sub_g_x_logreg(),1e-8,sgd_iter,sgd_step,size(X,2),lambda)
+    println(evaluate(X,y,theta,"logreg",true))
 end
 
-lambda = 0.1
-iter = 100
 
 if rosenbrock
     rosen_x0 = zeros(2,1)

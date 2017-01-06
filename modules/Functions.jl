@@ -1,6 +1,6 @@
 module Functions
 
-export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg,sub_g_logreg,f_svm,sub_g_svm
+export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg,sub_g_logreg,f_svm,sub_g_svm,sub_g_x_svm,sub_g_x_logreg
 #=
 Square-function with gradient
 =#
@@ -55,6 +55,7 @@ function g_logreg(X,y,θ,λ)
     end
 end
 
+
 #TODO: improve by checking sub-gradient-constraint
 function sub_g_logreg(X,y,Θ,λ)
     return function(Θ)
@@ -77,6 +78,13 @@ function sub_g_logreg(X,y,Θ,λ)
     end
 end
 
+function sub_g_x_logreg()
+        return function(x_i,y_i,θ,λ)
+              array = zeros(size(x_i,2))
+              exponential = exp(-y_i*dot(θ,x_i))
+              return (-y_i * x_i * exponential) / ( 1 + exponential ) + λ * θ
+        end
+end
 #=
 SVM - Loss-function and gradient
 =#
@@ -119,6 +127,23 @@ function sub_g_svm(X,y,θ,λ)
       end
     end
 end
+
+#=
+Compute the gradient for one datapoint for hinge-loss.
+=#
+function sub_g_x_svm()
+    return function(x_i,y_i,θ,λ)
+      array = zeros(size(x_i,2))
+      val = 1 - (y_i * dot(θ,x_i))
+      if val < 0
+          return λ * θ;
+      else
+          return -y_i * x_i + λ * θ;
+      end
+  end
+end
+
+
 #=
 Rosenbrock-function and its gradient.
 =#
