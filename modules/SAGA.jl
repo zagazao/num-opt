@@ -1,14 +1,17 @@
 
+using ProximalOperators
+
 function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
     @printf("iter \t\t fval \t\t\t diff \t\t opt \t\t alp \t\t lsiter \n")
 
     x_k = x0
     x_old = x_k
     oval = Inf
+    # Arrays of grad_inf and function_values
     val_array = zeros(0)
     stop_array = zeros(0)
 
-    # M is my matrix of derivatis
+    # M is my matrix of derivatives
     M = zeros(size(x0,1),num_data)
     for i in 1:num_data
         # compute f' for each data_point
@@ -23,13 +26,13 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
     @printf("Initial derivatives are initialized.\n")
 
     for i in 1:maxiter
-        # safe some values
+
         fval = f(x_k)
 
-        #println(i)
         # Step 1:
         # pick a j uniformly at random. j ∈ [1,n]
         j = rand(1:num_data)
+        # pick the j-th datapoint
         x_j = X[j:j,1:size(X,2)]'
 
         # Step 2:
@@ -65,12 +68,4 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
 
     end
     return (x_k, "iter", maxiter)
-end
-
-#=
-    Implementation of prox_α_h(y)
-    prox = argmin { h(x) + 1/2*α||x-y||^2}
-=#
-function prox()
-    # TODO: search for x, that minimizes h(x) and the squared distance to y.
 end

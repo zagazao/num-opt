@@ -6,6 +6,7 @@ using LS
 
 export qn
 
+# Quasi-Newton-Method (BFGS), or Gradient-Descent, depending on parameter
 function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
     @printf("iter \t\t fval \t\t\t diff \t\t opt \t\t alp \t\t lsiter \n")
     xk = x0

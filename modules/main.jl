@@ -22,9 +22,9 @@ println("Loaded dataset")
 
 rosenbrock = false
 logreg = false
-sgd_opt = true
+sgd_opt = false
 svm = false
-saga = false
+saga = true
 
 
 lambda = 0.1
@@ -42,7 +42,7 @@ if saga
     f = f_svm(X,y,x0,lambda)
     g = sub_g_x_svm()
     (theta, strings, iter) = SAGA(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1))
-    println(evaluate(X,y,theta,"svm",true))
+    println(evaluate(X,y,theta,"svm",false))
 end
 
 

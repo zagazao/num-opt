@@ -94,8 +94,8 @@ function f_svm(X,y,θ,λ)
         X = X
         y = y
         λ = λ
-        # datapoints
         fval = 0
+        # datapoints
         for i in 1:size(X,1)
             x_i = X[i:i,1:size(X,2)]'
             fval += max(0, (1 - y[i]*dot(θ,x_i)))
@@ -143,6 +143,10 @@ function sub_g_x_svm()
   end
 end
 
+#
+# TODO: Functions without included regression
+
+#
 
 #=
 Rosenbrock-function and its gradient.
