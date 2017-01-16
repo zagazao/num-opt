@@ -4,6 +4,10 @@ using ProximalOperators
 function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator)
     @printf("iter \t\t j-pick \t\t fval \t\t\t diff \n")
 
+    f_best = Inf
+    x_best = x0
+
+
     x_k = x0
     x_old = x_k
     oval = Inf
@@ -27,6 +31,11 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
 
     for i in 1:maxiter
         fval = f(x_k)
+
+        if fval < f_best
+            f_best = fval
+            x_best = x_k
+        end
 
         # Step 1:
         # pick a j uniformly at random. j ∈ [1,n]
@@ -59,7 +68,6 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
         x_old = x_k
         # Update x_k with prox_operator
         x_k, f_k = prox(prox_operator, w_k_plus, stepsize)
-        #x_k = prox{ h(x) + 1 / (2 * stepsize) }
         @printf("%i \t\t %i \t\t %f \t\t %f \n",i,j,fval,(oval-fval))
 
         # No decrease

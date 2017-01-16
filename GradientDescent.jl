@@ -1,11 +1,8 @@
-include("modules/Functions.jl")
-include("modules/Evaluate.jl")
-include("modules/Linesearch.jl")
+include("./src/functions/Functions.jl")
+include("./src/evaluate/Evaluate.jl")
+include("./src/linesearch/Linesearch.jl")
 
 using MAT
-using Functions
-using Evaluate
-using LS
 
 function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose=false)
 	m = size(X,1) # i have m datapoints
@@ -13,7 +10,7 @@ function logregGD(X, y, lambda, epsilon=1e-4, maxiter=1000,maxLSiter=25, verbose
 	theta = zeros(784,1)
 	multiplier = 0.5
 	f_likelihood = f_logreg(X,y,theta,lambda)
-	g_likelihood = g_logreg2(X,y,theta,lambda)
+	g_likelihood = g_logreg(X,y,theta,lambda)
 	optimal = false
 
 	likelihood = Inf

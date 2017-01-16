@@ -1,7 +1,7 @@
 using MAT
 using MNIST
 
-dataLocation = "../../data/mnist67.scale.1k.mat"
+dataLocation = "data/mnist67.scale.1k.mat"
 
 function update_labels(y)
     for i in 1:size(y,1)
