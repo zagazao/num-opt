@@ -1,10 +1,4 @@
-module GD
-
-include("Linesearch.jl")
-
-using LS
-
-export qn
+include("../linesearch/Linesearch.jl")
 
 # Quasi-Newton-Method (BFGS), or Gradient-Descent, depending on parameter
 function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
@@ -20,7 +14,7 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
 
     grad_new = g(xk)
     for i in 1:maxiter
-
+        print(i)
         fval = f(xk)
         stoppingCriteria = norm(grad_new,Inf)
 
@@ -81,6 +75,4 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
         # ∇ = grad_new
     end
     return (xk,"maxiter",val_array,stop_array)
-end
-
 end

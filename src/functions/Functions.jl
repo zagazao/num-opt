@@ -1,6 +1,3 @@
-module Functions
-
-export f_square,g_square,f_logreg,g_logreg,f_rosenbrock,g_rosenbrock,g_logreg,sub_g_logreg,f_svm,sub_g_svm,sub_g_x_svm,sub_g_x_logreg
 #=
 Square-function with gradient
 =#
@@ -85,10 +82,10 @@ function sub_g_x_logreg()
               return (-y_i * x_i * exponential) / ( 1 + exponential ) + λ * θ
         end
 end
-#=
-SVM - Loss-function and gradient
-=#
 
+#=
+hinge-loss - Loss-function and gradient
+=#
 function f_svm(X,y,θ,λ)
     return function(θ)
         X = X
@@ -143,10 +140,11 @@ function sub_g_x_svm()
   end
 end
 
-#
-# TOOD:
+function logreg_hessian(X,y,theta)
+    # create matrix with size of theta^2
+    H
 
-#
+end
 
 #=
 Rosenbrock-function and its gradient.
@@ -158,6 +156,4 @@ end
 
 function g_rosenbrock(x_k)
     return [ -400*x_k[1]*(x_k[2]-x_k[1]^2)-2(1-x_k[1]) ; 200*x_k[1]*(x_k[2]-x_k[1]^2) ]
-end
-
 end

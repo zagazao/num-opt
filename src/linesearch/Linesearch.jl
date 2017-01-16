@@ -1,6 +1,3 @@
-module LS
-
-export backTrackingLS,wolfeLineSearch
 
 function backTrackingLS(f,g,maxLSiter,c1,θ,∇,fval)
     # θ is column vector
@@ -37,7 +34,6 @@ function wolfeLineSearch(f,g,pk,maxLSiter,maxZoomIter,c1,c2,xk,grad,fval)
     phi_prime_a_i = NaN
 
     for i in 1:maxLSiter
-
 
         x_new = xk + a_i * pk
         phi_a_i = f(x_new)
@@ -118,7 +114,4 @@ function zoom(alpha_l, alpha_u,maxzoomiter,phi_0,phi_prime_0,f,g,pk,xk,c1,c2)
         phi_prime_au = (pk'*g(xk + alpha_u))[1]
 
     end
-end
-
-# MODULE END
 end
