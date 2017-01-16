@@ -10,21 +10,36 @@ using Functions
 using MAT
 using GD
 using Plotting
+using ProximalOperators
+using MNIST
+
+function update_labels(y)
+    for i in 1:size(y,1)
+        if y[i] % 2 == 0
+             y[i] = 0
+        else
+             y[i] = 1
+        end
+    end
+end
 
 dataLocation = "../data/mnist67.scale.1k.mat"
 
 file = matopen(dataLocation)
 tmp = read(file, "X")
 
-X = full(tmp)
-y = read(file,"y")
+#X = full(tmp)
+#y = read(file,"y")
+X,y = traindata()
+update_labels(y)
+
 println("Loaded dataset")
 
 rosenbrock = false
-logreg = false
+logreg = true
 sgd_opt = false
 svm = false
-saga = true
+saga = false
 
 
 lambda = 0.1
@@ -32,16 +47,19 @@ iter = 100
 
 if saga
     # SAGA SVM
-    x0 = ones(size(X,2),1)
+    x0 = zeros(size(X,2),1)
     # println(eig(X))
     # Lippschitz = largest eigenvalue of Hessian*Hessian'
     lippschitz = 0.5
     convexity = 0.5
     iter = 3000
-    step = 0.1
-    f = f_svm(X,y,x0,lambda)
-    g = sub_g_x_svm()
-    (theta, strings, iter) = SAGA(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1))
+    step = 0.001
+    #f = f_svm(X,y,x0,0)
+    #g = sub_g_x_svm()
+    f = f_logreg(X,y,x0,0)
+    g = sub_g_x_logreg()
+    prox_operator = NormL2(0.1)
+    (theta, strings, iter) = SAGA(X,y,x0,f,g,1e-8,0,iter,step,size(X,1),prox_operator)
     println(evaluate(X,y,theta,"svm",false))
 end
 
@@ -89,7 +107,7 @@ end
 if logreg
     x0 = zeros(size(X,2),1)
 
-    if true
+    if false
         println("Backtracking GradientDescent LogReg")
         @time (x, status,vals1,stops1 ) = qn(x0,f_logreg(X,y,x0,lambda),g_logreg(X,y,x0,lambda),1e-12,iter,20,20,1e-4,.9,"bt","gd")
         println(evaluate(X,y,x))

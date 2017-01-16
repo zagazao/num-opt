@@ -1,7 +1,7 @@
 
 using ProximalOperators
 
-function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
+function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator)
     @printf("iter \t\t fval \t\t\t diff \t\t opt \t\t alp \t\t lsiter \n")
 
     x_k = x0
@@ -44,6 +44,7 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
             M[k:k,j:j] = gval_j[k]
         end
 
+
         # Step 3:
         # Update x using f'_j(phi_j_k_plus),
         # need sum
@@ -52,18 +53,29 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
             sum += M[1:size(x0,1),k:k]
         end
         sum = sum / num_data
+        
         # TODO: Try to remove gradient-computation
-        w_k_plus = x_k - stepsize * ( M[1:size(x0,1),j:j] - g(x_j, y[j], x_old, λ, ) + sum )
+        w_k_plus = x_k - stepsize * ( M[1:size(x0,1),j:j] - g(x_j, y[j], x_old, 0 ) + sum )
 
         x_old = x_k
-        # Update x_k
-        x_k = w_k_plus
+        # Update x_k with prox_operator
+        x_k, f_k = prox(prox_operator, w_k_plus, stepsize)
         #x_k = prox{ h(x) + 1 / (2 * stepsize) }
         @printf("%i \t\t %i \t\t %f \t\t %f \n",i,j,fval,(oval-fval))
+
+        #for i in 1:num_data
+        #    # compute f' for each data_point
+        #    x_i = X[i:i,1:size(X,2)]'
+        #    gval_idx = g( x_i ,y[i] ,x0 ,0 )
+        #    # fill i-th column of M
+        #    for j in 1:size(x0,1)
+        #        M[j:j,i:i] = gval_idx[j]
+        #    end
+        #end
         # No decrease
-        if fval > oval
-            return (x_k, "iter", maxiter)
-        end
+        #if fval > oval
+        #    return (x_k, "iter", maxiter)
+        #end
         oval = fval
 
     end

@@ -144,7 +144,7 @@ function sub_g_x_svm()
 end
 
 #
-# TODO: Functions without included regression
+# TOOD:
 
 #
 
