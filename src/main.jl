@@ -17,7 +17,6 @@ sgd_opt = false
 svm = false
 saga = true
 
-
 lambda = 10
 iter = 100
 

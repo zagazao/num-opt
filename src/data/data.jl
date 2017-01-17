@@ -14,20 +14,22 @@ function update_labels(y)
 end
 
 function getOldData()
+    println("Loading dataset.")
     file = matopen(dataLocation)
     tmp = read(file, "X")
 
     X = full(tmp)
     y = read(file,"y")
-    println("Loaded dataset.\n")
+    println("Loaded dataset.")
     return (X,y)
 end
 
 function getFullData()
+    println("Loading dataset.")
     X, y = traindata()
     X = X'
     X = X / 276
     update_labels(y)
-    println("Loaded dataset.\n")
+    println("Loaded dataset.")
     return (X,y)
 end
