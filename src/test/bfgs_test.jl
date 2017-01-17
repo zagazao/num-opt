@@ -3,7 +3,7 @@ include("../evaluate/Evaluate.jl")
 include("../opt/GradientDescent.jl")
 include("../data/data.jl")
 
-X, y = getOldData()
+X, y = getFullData()
 
 lambda = 10
 iter = 100

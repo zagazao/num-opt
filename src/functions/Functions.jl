@@ -23,7 +23,7 @@ function f_logreg(X,y,θ,λ)
         for i in 1:size(data,1)
             # x = 784*1 column vector
             x_i = data[i:i,:]'
-            funcVal += log(1+ exp(-labels[i]*dot(θ,x_i)))
+            funcVal += log( 1+ exp(-labels[i] * dot(θ,x_i) ) )
         end
         funcVal += λ/2*(norm(θ,2)^2)
         return funcVal

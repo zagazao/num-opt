@@ -59,8 +59,9 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
         x_k, f_k = prox(prox_operator, w_k, stepsize)
 
         if i % i == 0
+
             oval = fval
-            fval = f(x_k)
+            fval = f(x_k)+lambda*norm(x_k,1)
             @printf("%i \t\t %i \t\t %f \t\t %f \t\t %e \n",i,j,fval,(oval-fval),stoppingCriteria)
         end
     end

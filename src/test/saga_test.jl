@@ -5,7 +5,7 @@ include("../data/data.jl")
 
 using ProximalOperators
 
-X, y = getOldData()
+X, y = getFullData()
 
 # init initial point x_0
 x0 = zeros(size(X,2),1)
@@ -13,12 +13,12 @@ x0 = zeros(size(X,2),1)
 lambda = 0
 
 iter = 1000
-step =0.003
+step =0.05
 
 f = f_logreg(X,y,x0,lambda)
 g = sub_g_logreg()
 
-prox_operator = SqrNormL2(0)
+prox_operator = NormL1(lambda)
 
 @time (theta, strings, iter) = SAGA(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1),prox_operator)
 
