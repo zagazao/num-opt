@@ -3,7 +3,7 @@ function predict_svm(θ,x)
 end
 
 function predict_logreg(theta,x)
-	prediction =  1 / (1+exp(-theta'*x')[1])
+	prediction =  1 / (1+exp(dot(theta,x)))
 	if prediction  < 0.5
 		return -1
 	else
@@ -15,9 +15,9 @@ function evaluate(X,y,theta,mode,verbose=false)
 	positiveHits = 0
 	for i in 1:size(X,1)
 		if mode == "logreg"
-			label = predict_logreg(theta,X[i:i,1:size(X,2)])
+			label = predict_logreg(theta,X[i:i,:])
 		elseif mode == "svm"
-			label = predict_svm(theta,X[i:i,1:size(X,2)])
+			label = predict_svm(theta,X[i:i,:])
 		else
 			error("Prediction mode not aviable")
 		end

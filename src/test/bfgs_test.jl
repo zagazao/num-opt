@@ -5,8 +5,8 @@ include("../data/data.jl")
 
 X, y = getFullData()
 
-lambda = 10
-iter = 100
+lambda = 0.1
+iter = 250
 
 x0 = zeros(size(X,2),1)
 

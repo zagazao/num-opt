@@ -13,6 +13,12 @@ end
 Logistic-regression loss-function, gradient and sub-gradient
 =#
 
+function f_logreg()
+    return function(x_i,y_i,θ,λ)
+        return log(1+exp(-y_i*dot(θ,x_i)))
+    end
+end
+
 function f_logreg(X,y,θ,λ)
     return function(θ)
         data = X
@@ -37,15 +43,14 @@ function g_logreg(X,y,θ,λ)
         λ = λ
         # n-dim-column-vector
         array = zeros(size(data,2))
+        # add l2 norm
+        array += λ * θ
         # iterate datapoints
         for i in 1:size(data,1)
             # pick i-th datapoint
         	x_i = data[i:i,:]'
             exponential = exp(-labels[i]*dot(θ,x_i))
             array += (-labels[i]*x_i * exponential)/(1+exponential)
-            if i == 1
-                array += λ * θ
-            end
         end
         return array
     end
@@ -78,30 +83,10 @@ function f_svm(X,y,θ,λ)
     end
 end
 
-function sub_g_svm(X,y,θ,λ)
-    return function(Θ)
-      X = X
-      y = y
-      λ = λ
-      # size of data set
-      m = size(X,2)
-      # pull one data point random
-      idx = rand(1:m)
-      # compute gradient for this data point
-      x_i = X[idx:idx,:]'
-      val = 1 - (y[idx] * dot(θ,x_i))
-      if val < 0
-          return λ * θ;
-      else
-          return -y[idx] * x_i + λ * θ;
-      end
-    end
-end
-
 #=
 Compute the gradient for one datapoint for hinge-loss.
 =#
-function sub_g_x_svm()
+function sub_g_svm()
     return function(x_i,y_i,θ,λ)
       val = 1 - (y_i * dot(θ,x_i))
       if val < 0
