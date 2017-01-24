@@ -1,24 +1,31 @@
 include("../functions/Functions.jl")
 include("../evaluate/Evaluate.jl")
-include("../opt/GradientDescent.jl")
+include("../opt/agd.jl")
 include("../data/data.jl")
+include("../plot/Plotting.jl")
 
+#using Plotting
 
 X, y = getOldData()
 
-lambda = 0.00001
-iter = 1000
-
 x0 = zeros(size(X,2),1)
 
-f = f_logreg(X,y,x0,lambda)
-g = g_logreg(X,y,x0,lambda)
+lambda = 0.00001
 
+iter = 1000
+step = 0.01
+
+f = f_logreg(X,y,x0,lambda)
+g = g_logreg(X,y,x0,0)
 
 #f = f_svm(X,y,x0,lambda)
 #g = sub_g_svm()
 
-@time (theta, status,vals1,stops1 ) = qn(x0,f,g,1e-12,iter,20,20,1e-4,.9,"bt","gd")
+prox_operator = SqrNormL2(lambda/2)
+
+@time (theta,state,val_array,stop_array) = agd(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1),prox_operator)
+
+#plotArray(val_array, "sgd1.svg")
 
 grad = g(theta)
 grad_norm = norm(grad, Inf)

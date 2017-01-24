@@ -52,14 +52,14 @@ function qn(x0, f, g,eps, maxiter, maxLSiter, maxzoomiter, c1, c2,ls, dir)
         end
         # compute stepsize by linesearch
         lsZiter = 0
-        if ls == "bt"
-            α,iter = backTrackingLS(f,g,maxLSiter,c1,x_k,grad_new,fval)
-        elseif ls == "wolfe"
-            α,iter,lsZiter = wolfeLineSearch(f,g,pk,maxLSiter,maxzoomiter,c1,c2,x_k,grad_new,fval)
-        end
-
+        #if ls == "bt"
+        #    α,iter = backTrackingLS(f,g,maxLSiter,c1,x_k,grad_new,fval)
+        #elseif ls == "wolfe"
+        #    α,iter,lsZiter = wolfeLineSearch(f,g,pk,maxLSiter,maxzoomiter,c1,c2,x_k,grad_new,fval)
+        #end
         @printf("%i \t\t %f \t\t %f \t %e \t %e \t\t %i %i \n",i,fval,(oval-fval),stoppingCriteria,α,iter,lsZiter)
         # update current point
+        α = 0.01
         x_old = x_k
         x_k = x_k + α * pk
 

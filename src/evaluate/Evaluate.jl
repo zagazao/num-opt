@@ -3,7 +3,7 @@ function predict_svm(θ,x)
 end
 
 function predict_logreg(theta,x)
-	prediction =  1 / (1+exp(dot(theta,x)))
+	prediction =  1 / ( 1 + exp(dot(-theta,x)))
 	if prediction  < 0.5
 		return -1
 	else

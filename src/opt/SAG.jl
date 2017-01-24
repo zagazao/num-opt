@@ -1,5 +1,5 @@
 
-function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
+function SAG(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
 
     x_k = x0
     x_old = x_k
@@ -34,7 +34,7 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         # Step 2:
         # Take phi_j_k_plus = xk and store f'_j(phi_j_k_plus) in the table
         phi_j_k_plus = x_k
-        gval_j = g(x_j ,y[j] , phi_j_k_plus,λ/num_data)
+        gval_j = g(x_j ,y[j] , phi_j_k_plus, λ/num_data )
         stoppingCriteria = norm(gval_j,Inf)
         # update gval_j in table
         M[:,j:j] = gval_j
@@ -47,14 +47,14 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
             sum += M[:,k:k]
         end
         sum = sum / num_data
-        #( 1 - λ * stepsize)  * x_k - ...
-        x_k = ( 1 - λ * stepsize)  * x_k - stepsize * ( (gval_j - old_gval_j) + sum  )
+
+
+        x_k = x_k - stepsize * ( (gval_j-old_gval_j)/num_data +  sum )
 
         oval = fval
         fval = f(x_k)
         append!( val_array, fval )
         @printf("%i \t\t %i \t\t %f \t\t %f \t\t %e \n",i,j,fval,(oval-fval),stoppingCriteria)
-
-    end
-    return (x_k, "iter", maxiter,val_array)
+        end
+    return (x_k, "iter", maxiter, val_array)
 end

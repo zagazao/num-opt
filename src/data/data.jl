@@ -13,6 +13,16 @@ function update_labels(y)
     end
 end
 
+function getTestData()
+    println("Loading testdata.")
+    X, y = testdata()
+    X = X'
+    X = X / 255
+    update_labels(y)
+    println("Loaded testdata.")
+    return (X,y)
+end
+
 function getOldData()
     println("Loading dataset.")
     file = matopen(dataLocation)
@@ -28,7 +38,7 @@ function getFullData()
     println("Loading dataset.")
     X, y = traindata()
     X = X'
-    X = X / 276
+    X = X / 255
     update_labels(y)
     println("Loaded dataset.")
     return (X,y)
