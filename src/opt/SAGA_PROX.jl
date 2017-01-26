@@ -12,13 +12,16 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
 
     # M is my matrix of derivatives (column i = f_i'(x))
     M = zeros(size(x0,1),num_data)
+    sum = zeros(size(x0,1))
     @time for i in 1:num_data
         # compute f' for each data_point at x0
         x_i = X[i:i,:]'
         gval_idx = g( x_i ,y[i] ,x0 ,0 )
         # fill i-th column of M
         M[:,i:i] = gval_idx
+        sum += gval_idx
     end
+    sum = sum / num_data
 
     @printf("Initial derivatives are initialized.\n")
     @printf("Stepsize was choosen to α = %f.\n", stepsize )
@@ -43,18 +46,16 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
 
         # Step 3:
         # Update x using f'_j(phi_j_k_plus)
-        sum = zeros(size(x0,1))
-        for k in 1:num_data
-            sum += M[:,k:k]
-        end
-        sum = sum / num_data
+        sum = sum - old_gval_j / num_data
+        sum = sum + gval_j / num_data
+
         w_k = x_k - stepsize * ( gval_j - old_gval_j + sum )
         x_old = x_k
         # Update x_k with prox_operator
         x_k, f_k = prox(prox_operator, w_k, stepsize)
 
         oval = fval
-        fval = f(x_k) # +lambda*norm(x_k,1)
+        fval = f(x_k)
         append!( val_array, fval )
         @printf("%i \t\t %i \t\t %f \t\t %f \t\t %e \n",i,j,fval,(oval-fval),stoppingCriteria)
     end

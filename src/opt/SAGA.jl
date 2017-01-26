@@ -10,13 +10,17 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
 
     # M is my matrix of derivatives (column i = f_i'(x))
     M = zeros(size(x0,1),num_data)
+    # average gradient
+    sum = zeros(size(x0,1))
     for i in 1:num_data
         # compute f' for each data_point at x0
         x_i = X[i:i,:]'
         gval_idx = g( x_i ,y[i] ,x0 ,λ/num_data )
         # fill i-th column of M
         M[:,i:i] = gval_idx
+        sum += gval_idx
     end
+    sum = sum / num_data
 
     @printf("Initial derivatives are initialized.\n")
     @printf("Stepsize was choosen to α = %f.\n", stepsize )
@@ -27,7 +31,6 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         # Step 1:
         # pick a j uniformly at random. j ∈ [1,n]
         j = rand(1:num_data)
-        # pick the j-th datapoint
         x_j = X[j:j,:]'
         old_gval_j = M[:,j:j]
 
@@ -39,19 +42,18 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         # update gval_j in table
         M[:,j:j] = gval_j
 
+
         # Step 3:
         # Update x using f'_j(phi_j_k_plus),
         x_old = x_k
-        sum = zeros(size(x0,1))
-        for k in 1:num_data
-            sum += M[:,k:k]
-        end
-        sum = sum / num_data
+        sum = sum - (old_gval_j) / num_data
+        sum = sum + (gval_j) / num_data
+
         #( 1 - λ * stepsize)  * x_k - ...
-        x_k = ( 1 - λ * stepsize)  * x_k - stepsize * ( (gval_j - old_gval_j) + sum  )
+        x_k = x_k - stepsize * ( (gval_j - old_gval_j) + sum  )
 
         oval = fval
-        fval = f(x_k)
+        @time fval = f(x_k)
         append!( val_array, fval )
         @printf("%i \t\t %i \t\t %f \t\t %f \t\t %e \n",i,j,fval,(oval-fval),stoppingCriteria)
 

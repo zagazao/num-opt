@@ -10,13 +10,16 @@ function SAG(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
 
     # M is my matrix of derivatives (column i = f_i'(x))
     M = zeros(size(x0,1),num_data)
+    sum = zeros(size(x0,1))
     for i in 1:num_data
         # compute f' for each data_point at x0
         x_i = X[i:i,:]'
         gval_idx = g( x_i ,y[i] ,x0 ,λ/num_data )
         # fill i-th column of M
         M[:,i:i] = gval_idx
+        sum += gval_idx
     end
+    sum = sum / num_data
 
     @printf("Initial derivatives are initialized.\n")
     @printf("Stepsize was choosen to α = %f.\n", stepsize )
@@ -42,14 +45,13 @@ function SAG(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         # Step 3:
         # Update x using f'_j(phi_j_k_plus),
         x_old = x_k
-        sum = zeros(size(x0,1))
-        for k in 1:num_data
-            sum += M[:,k:k]
-        end
-        sum = sum / num_data
+        # update the sum
+        sum = sum - old_gval_j / num_data
+        sum = sum + gval_j / num_data
 
-
-        x_k = x_k - stepsize * ( (gval_j-old_gval_j)/num_data +  sum )
+        # two different updates
+        #x_k = x_k - stepsize * ( (gval_j-old_gval_j)/num_data +  sum )
+        x_k = x_k - stepsize * sum
 
         oval = fval
         fval = f(x_k)

@@ -3,7 +3,7 @@ include("../evaluate/Evaluate.jl")
 include("../opt/SAG.jl")
 include("../opt/SAGA.jl")
 include("../opt/SAGA_PROX.jl")
-include("../opt/sgd.jl")
+include("../opt/SGD.jl")
 include("../data/data.jl")
 include("../plot/Plotting.jl")
 
@@ -20,14 +20,14 @@ x0 = zeros(size(X,2),1)
 
 #lambda = 0.0001
 
-iter = 300
+iter = 10
 #step =0.008
 sag_step=0.01
 
 mode = "logreg"
 
-for lambda in [1e-2,1e-3,1e-4,1e-5]
-    for step in [0.1, 0.05, 0.01, 0.005, 0.001]
+for lambda in [0.001]
+    for step in [0.02]
         plotname = string("sag - saga - prox - sgd - ", lambda,  " - ",step, ".svg" )
         println(plotname)
 
@@ -41,7 +41,7 @@ for lambda in [1e-2,1e-3,1e-4,1e-5]
             error("wrong mode!")
         end
 
-        prox_operator = NormL1(lambda)
+        prox_operator = NormL2(lambda)
 
         @time (theta_sag, strings, iter,val_array_sag) = SAG(X,y,x0,f,g,1e-8,lambda,iter,step,size(X,1))
 

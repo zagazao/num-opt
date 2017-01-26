@@ -24,10 +24,8 @@ function sgd(X, y, x0, f, g,eps,lambda, maxiter, stepsize,num_data_points)
         end
         stoppingCriteria = norm(gval,Inf)
         append!( val_array, fval )
-        append!( stop_array, stoppingCriteria )        
-        if abs(oval - fval) < eps
-            #return (xk, "NO DECREASE",val_array,stop_array)
-        end
+        append!( stop_array, stoppingCriteria )
+    
         x_new = x_k + stepsize * - gval
 
         x_k = x_new
