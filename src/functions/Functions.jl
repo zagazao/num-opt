@@ -97,27 +97,6 @@ function sub_g_svm()
   end
 end
 
-function logreg_hessian(X,y,θ)
-    # create matrix with size of theta^2
-    dim = size(θ,1)
-    H = zeros(dim,dim)
-    for i in 1:dim
-        for j in 1:dim
-            # sum over data set
-            h_i_j = 0
-            @printf("Filling H[%i][%i].\n",i,j)
-            for d in 1:size(X,2)
-                x_d = X[d:d,:]'
-                exponential = exp(θ'*x_d)
-                xx = x_d[i]*x_d[j]
-                 h_i_j += ((1+exponential)*exponential*xx-exponential^2*xx)/(1+exponential)^2
-            end
-            H[i:i,j:j] = h_i_j
-        end
-    end
-    return H
-end
-
 #=
 Rosenbrock-function and its gradient.
 =#

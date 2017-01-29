@@ -27,7 +27,7 @@ sag_step=0.01
 mode = "logreg"
 
 for lambda in [0.001]
-    for step in [0.02]
+    for step in [0.02, 0.01, 0.001]
         plotname = string("sag - saga - prox - sgd - ", lambda,  " - ",step, ".svg" )
         println(plotname)
 

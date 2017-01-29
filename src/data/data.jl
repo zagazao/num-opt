@@ -17,6 +17,7 @@ function getTestData()
     println("Loading testdata.")
     X, y = testdata()
     X = X'
+    # normalize data
     X = X / 255
     update_labels(y)
     println("Loaded testdata.")
@@ -38,6 +39,7 @@ function getFullData()
     println("Loading dataset.")
     X, y = traindata()
     X = X'
+    # normalize data
     X = X / 255
     update_labels(y)
     println("Loaded dataset.")
