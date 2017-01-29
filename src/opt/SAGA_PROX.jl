@@ -45,7 +45,7 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data,prox_operator
         M[:,j:j] = gval_j
 
         # Step 3:
-        # Update x using f'_j(phi_j_k_plus)
+        # Update x 
         sum = sum - old_gval_j / num_data
         sum = sum + gval_j / num_data
 

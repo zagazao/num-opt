@@ -30,14 +30,13 @@ function SAG(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         # Step 1:
         # pick a j uniformly at random. j ∈ [1,n]
         j = rand(1:num_data)
-        # pick the j-th datapoint
         x_j = X[j:j,:]'
         old_gval_j = M[:,j:j]
 
         # Step 2:
         # Take phi_j_k_plus = xk and store f'_j(phi_j_k_plus) in the table
         phi_j_k_plus = x_k
-        gval_j = g(x_j ,y[j] , phi_j_k_plus, λ/num_data )
+        gval_j = g(x_j ,y[j] , phi_j_k_plus, λ / num_data )
         stoppingCriteria = norm(gval_j,Inf)
         # update gval_j in table
         M[:,j:j] = gval_j
