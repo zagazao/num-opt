@@ -50,10 +50,10 @@ function SAGA(X, y, x0, f, g, eps, λ, maxiter, stepsize, num_data)
         sum = sum + (gval_j) / num_data
 
         #( 1 - λ * stepsize)  * x_k - ...
-        x_k = x_k - stepsize * ( (gval_j - old_gval_j) + sum  )
+        x_k = x_k - stepsize * ( gval_j - old_gval_j + sum  )
 
         oval = fval
-        @time fval = f(x_k)
+        fval = f(x_k)
         append!( val_array, fval )
         @printf("%i \t\t %i \t\t %f \t\t %f \t\t %e \n",i,j,fval,(oval-fval),stoppingCriteria)
 

@@ -7,7 +7,7 @@ X, y = getFullData()
 
 # init initial point x_0
 x0 = zeros(size(X,2),1)
-
+ 
 lambda = 5
 
 iter = 250
